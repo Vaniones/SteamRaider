@@ -2,6 +2,7 @@ import json
 import aiohttp
 import asyncio
 from pyppeteer import launch
+import time
 #import discord
 
 #webhook_url = ""
@@ -106,6 +107,7 @@ async def main():
     #channel_id = data["channel"]
     browser_path = data["browser"]
     raid_msg = data["message"]
+    delay = data["delay"]
     
     #holy shit so... much... data...
     #well not anymore, me from like 2 months ago
@@ -184,7 +186,8 @@ async def main():
 
     while True:
         sayInChat(f"{raid_msg},page)
-
+        time.sleep(delay)#this might be the intended way to do it or not the intended way,
+                         #considering that asyncio exists here
 
 print("Initializing SteamRaider V1...")
 asyncio.run(main())
