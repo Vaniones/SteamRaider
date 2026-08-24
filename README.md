@@ -1,6 +1,6 @@
-# Steam 2 Discord Relay
+# SteamRaider
 
-A shitty FOSS Relay for steam, relays to discord,
+A shitty FOSS Raider for Steam Chat, really janky please dont look at the code
 
 dunno what else to put here, got nothing else to say
 
