@@ -2,36 +2,39 @@ import json
 import aiohttp
 import asyncio
 from pyppeteer import launch
-import discord
+#import discord
 
-webhook_url = ""
+#webhook_url = ""
 
-async def watch_chat(page):
-    seen = set()
+#Who cares about watching chats and Discord?
+#We just want to send messages, amirite?
 
-    # initialize baseline
-    initial = await page.evaluate("""
-        () => Array.from(document.querySelector('.chatHistory')?.children || [])
-            .map(x => x.innerText)
-    """)
-
-    for msg in initial:
-        seen.add(msg)
-
-    while True:
-        messages = await page.evaluate("""
-            () => Array.from(document.querySelector('.chatHistory')?.children || [])
-                .map(x => x.innerText)
-        """)
-
-        for msg in messages:
-            if not msg or msg in seen:
-                continue
-
-            seen.add(msg)
-            return msg
-
-        await asyncio.sleep(0.5)  # prevent CPU spam
+#async def watch_chat(page):
+#    seen = set()
+#
+#    # initialize baseline
+#    initial = await page.evaluate("""
+#        () => Array.from(document.querySelector('.chatHistory')?.children || [])
+#            .map(x => x.innerText)
+#    """)
+#
+#    for msg in initial:
+#        seen.add(msg)
+#
+#    while True:
+#        messages = await page.evaluate("""
+#            () => Array.from(document.querySelector('.chatHistory')?.children || [])
+#                .map(x => x.innerText)
+#        """)
+#
+#        for msg in messages:
+#            if not msg or msg in seen:
+#                continue
+#
+#            seen.add(msg)
+#            return msg
+#
+#        await asyncio.sleep(0.5)  # prevent CPU spam
 
 
 async def login(page, usern, passw):
@@ -58,16 +61,16 @@ async def login(page, usern, passw):
     """)
 
 
-async def webhook_message(msg):
-    async with aiohttp.ClientSession() as session:
-        await session.post(webhook_url, json={"content": msg})
+#async def webhook_message(msg):
+#    async with aiohttp.ClientSession() as session:
+#        await session.post(webhook_url, json={"content": msg})
 
 
-async def relay_message(time, name, msg):
-    async with aiohttp.ClientSession() as session:
-        await session.post(webhook_url, json={
-            "content": f"[{time}] {name}: {msg}"
-        })
+#async def relay_message(time, name, msg):
+#    async with aiohttp.ClientSession() as session:
+#        await session.post(webhook_url, json={
+#            "content": f"[{time}] {name}: {msg}"
+#        })
 
 async def sayInChat(text, page):
     textarea_selector = 'textarea.chatentry_chatTextarea_113iu.Focusable'
@@ -97,13 +100,16 @@ async def main():
 
     usern = data["user"]
     passw = data["pass"]
-    webhook_url = data["webhook"]
-    spym = data["spy"]
-    bot_token = data["bot"]
-    channel_id = data["channel"]
+    #webhook_url = data["webhook"]
+    #spym = data["spy"]
+    #bot_token = data["bot"]
+    #channel_id = data["channel"]
     browser_path = data["browser"]
+    raid_msg = data["message"]
+    
     #holy shit so... much... data...
-
+    #well not anymore, me from like 2 months ago
+    
     browser = await launch(
         headless=False,
         executablePath=browser_path,
@@ -144,55 +150,41 @@ async def main():
     input("Press enter once you're inside the chat...")
     await asyncio.sleep(2)
 
-    print("Logged in, starting relay...")
+    print("Logged in, starting raid...")
 
     selector = ".chatRoomGroupHeaderName"
     element = await page.waitForSelector(selector, {"visible": True})
     text = await page.evaluate('(el) => el.textContent', element)
 
-    await webhook_message("Initialized in chatroom: " + text)
+    #await webhook_message("Raiding in chatroom: " + text)
 
-    if spym == "false":
-        #setup bot shit
-        intents = discord.Intents.default()
-        intents.message_content = True
-    
-        bot = discord.Client(intents=intents)
-    
-        @bot.event
-        async def on_ready():
-            print(f"Bot launched as {bot.user}")
-            print(f"Listening on channel ID: {channel_id}")
-    
-        @bot.event
-        async def on_message(msg):
-            if msg.author == client.user:
-                return
-    
-            if msg.channel.id != channel_id:
-                return
-    
-            sayInChat(f"{msg.author.display_name} ({msg.author_name}): {msg.content}",page)
-
-        bot.run(bot_token)
+    #if spym == "false":
+    #    #setup bot shit
+    #    intents = discord.Intents.default()
+    #    intents.message_content = True
+    #
+    #    bot = discord.Client(intents=intents)
+    # 
+    #    @bot.event
+    #    async def on_ready():
+    #        print(f"Bot launched as {bot.user}")
+    #        print(f"Listening on channel ID: {channel_id}")
+    # 
+    #    @bot.event
+    #    async def on_message(msg):
+    #        if msg.author == client.user:
+    #            return
+    # 
+    #       if msg.channel.id != channel_id:
+    #            return
+    # 
+    #        sayInChat(f"{msg.author.display_name} ({msg.author_name}): {msg.content}",page)
+    #
+    #    bot.run(bot_token)
 
     while True:
-        trigger = await watch_chat(page)
-
-        try:
-            lines = trigger.splitlines()
-            print(trigger)
-            time = lines[1].strip()
-            name = lines[0].strip() if len(lines) > 2 else "Unknown"
-            msg = lines[-1].strip()
-            msg = msg.replace("@everyone", "(BLOCKED EVERYONE PING)")
-            msg = msg.replace("@here", "(BLOCKED HERE PING)")
-
-            await relay_message(time, name, msg)
-
-        except Exception as e:
-            print("Parse error:", e)
+        sayInChat(f"{raid_msg},page)
 
 
-print("Initializing Steam2Discord V1...")
+print("Initializing SteamRaider V1...")
 asyncio.run(main())
