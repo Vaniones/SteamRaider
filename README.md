@@ -13,7 +13,8 @@ dunno what else to put here, got nothing else to say
    {
      "user": "<STEAM_USERNAME>",
      "pass": "<STEAM_PASSWORD>",
-     "message: "haha u have been raided!!!"
+     "message": "haha u have been raided!!!",
+     "delay": 2.5
    }
    ```
 5. Profit!!!
