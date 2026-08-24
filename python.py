@@ -185,8 +185,8 @@ async def main():
     #    bot.run(bot_token)
 
     while True:
-        sayInChat(f"{raid_msg}",page)
-        time.sleep(delay)#this might be the intended way to do it or not the intended way,
+        await sayInChat(f"{raid_msg}",page)
+        await asyncio.sleep(delay)#this might be the intended way to do it or not the intended way,
                          #considering that asyncio exists here
 
 print("Initializing SteamRaider V1...")
