@@ -186,8 +186,7 @@ async def main():
 
     while True:
         await sayInChat(f"{raid_msg}",page)
-        await asyncio.sleep(delay)#this might be the intended way to do it or not the intended way,
-                         #considering that asyncio exists here
+        await asyncio.sleep(delay)
 
 print("Initializing SteamRaider V1...")
 asyncio.run(main())
